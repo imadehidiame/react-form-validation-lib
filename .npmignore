@@ -1,0 +1,8 @@
+node_modules/
+src/
+rollup.config.js
+tsconfig.json
+tailwind.config.js
+postcss.config.js
+*.test.js
+*.spec.js
