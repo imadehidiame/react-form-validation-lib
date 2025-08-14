@@ -13,13 +13,13 @@ export const evaluate_file_extension = (response:Response) =>{
   
   export const is_binary_file = (response:Response)=>{
     const headers = ['image/','application/','text/','audio/','video/','application/vnd','application/octet-stream'];
-    return headers.some(e=>response.headers.get('Content-Type')?.startsWith(e) && response.headers.get('Content-Type') !== 'application/json');
+    return headers.some(e=>response.headers.get('Content-Type')?.startsWith(e) && response.headers.get('Content-Type') !== 'application/json' && response.headers.get('Content-Type') !== 'text/plain');
   }
   
   export const fetch_request = async <T>(method:'POST'|'GET'|'PATCH'|'DELETE',action:string,body?:string|FormData|any|null,is_json?:boolean,binary?:{
     display:'text'|'object_url'|'body'|'download',
     extension?:string;
-  },error?:{unknown:string,catch:string,request:string}): Promise<{
+  },error?:{catch:string,request:string}): Promise<{
     data:T|any,
     is_error?:boolean,
     status?:number,
@@ -91,18 +91,16 @@ export const evaluate_file_extension = (response:Response) =>{
           }
           
         }else{
-  
           const contentType = response.headers.get("Content-Type");
           if (!contentType?.includes("application/json")) {
-            return {data:await response.text() as T,status,response:sent_response};
+            let resp = JSON.parse(await response.text());
+            return {data:resp as T,status,response:sent_response};
           }
             return {data:await response.json() as T,status,response:sent_response};
         }
         
     } catch (errorr) {
-      console.log('Error during fetch\n',errorr);
-      console.log( errorr instanceof Error ? errorr.message : 'Error with no message property');
-        return {is_error:true,/*error_message:errorr instanceof Error ? errorr.message : 'Error with no message property',*/data: error?.catch ?? 'An unknown error occured likely before request was processed',status:500}
+      return {is_error:true,/*error_message:errorr instanceof Error ? errorr.message : 'Error with no message property',*/data: error?.catch ?? 'An unknown error occured likely before request was processed',status:500}
     }
   }
   

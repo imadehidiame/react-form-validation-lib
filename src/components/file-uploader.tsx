@@ -68,8 +68,6 @@ const FileUploader: React.FC<IFileUploader> = ({ fieldChange, mediaUrl, extensio
 
 
     useEffect(() => {
-        //console.log('mediaUrl has changed');
-        //console.log(mediaUrl);
         const upload_file = async () => {
 
             if (mediaUrl && mediaUrl.length > 0) {
@@ -84,7 +82,6 @@ const FileUploader: React.FC<IFileUploader> = ({ fieldChange, mediaUrl, extensio
                             files_array.push({ is_image, name: is_image ? URL.createObjectURL(element) : element.name })
 
                         } else {
-                            //console.log({is_image_file:is_image_file()});
                             const is_image = is_image_file();
                             files_array.push({ is_image: is_image, name: is_image ? element :  'Uploaded' + index });
                             //files_array.push(element);

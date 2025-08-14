@@ -12,6 +12,7 @@ import { HistoryPlugin } from '@lexical/react/LexicalHistoryPlugin';
 import { LexicalErrorBoundary } from '@lexical/react/LexicalErrorBoundary';
 import { cn } from "../utils/cn";
 
+
 interface ComponentProps {
   on_change?: (value: any) => void;
   disable: boolean;
@@ -51,6 +52,12 @@ export const ToolbarPlugin: React.FC<ComponentProps> = ({ on_change, disable, va
        const paragraph = $createParagraphNode();
        paragraph.append($createTextNode(insertion));
         $insertNodes([paragraph]);
+        set_inserts(inserts=>inserts+1);
+      },{tag:'tag-'+inserts});
+    }else{
+      editor.update(()=>{
+        const root = $getRoot();
+        root.clear();
         set_inserts(inserts=>inserts+1);
       },{tag:'tag-'+inserts});
     }
