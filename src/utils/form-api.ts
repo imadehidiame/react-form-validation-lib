@@ -19,7 +19,21 @@ export const evaluate_file_extension = (response:Response) =>{
   export const fetch_request = async <T>(method:'POST'|'GET'|'PATCH'|'DELETE',action:string,body?:string|FormData|any|null,is_json?:boolean,binary?:{
     display:'text'|'object_url'|'body'|'download',
     extension?:string;
-  },error?:{catch:string,request:string}): Promise<{
+  },error?:{catch:string,request:string},
+    fetch_options?:Partial<{
+    cache?:'default'|'force-cache'|'no-cache'|'no-store'|'only-if-cached'|'reload'
+    credentials?:'include'|'omit'|'same-origin',
+    integrity?:string,
+    keepalive?:boolean,
+    cors?:'cors'|'navigate'|'no-cors'|'same-origin',
+    priority?:'auto'|'high'|'low',
+    redirect?:'error'|'follow'|'manual',
+    referrer?:string,
+    referrerPolicy?:'no-referrer'|'no-referrer-when-downgrade'|'origin'|'origin-when-cross-origin'
+    |'same-origin'|'strict-origin'|'strict-origin-when-cross-origin'|'unsafe-url',
+    signal?:AbortSignal|null,
+    window?:null
+  }>,headers?:Partial<Record<string,string>>): Promise<{
     data:T|any,
     is_error?:boolean,
     status?:number,
@@ -29,7 +43,40 @@ export const evaluate_file_extension = (response:Response) =>{
         if(method === 'POST' || method === 'PATCH'){
                 body = body instanceof FormData || typeof body == 'string' || body instanceof URLSearchParams ? body :  JSON.stringify(body);
         }
-        const response = is_json ? await fetch(action,{method,body,headers:{'Content-Type':'application/json'}}) : await fetch(action,{method,body});
+        const request_headers = Object.assign({},headers?headers:{});
+       
+          if(is_json){
+            request_headers['Content-Type'] = 'application/json'
+          }
+        
+        const response = is_json ? await fetch(
+          action,{method,body,headers:
+              request_headers as Record<string,string>,
+              cache:fetch_options?.cache,
+              credentials:fetch_options?.credentials,
+              integrity:fetch_options?.integrity,
+              keepalive:fetch_options?.keepalive,
+              mode:fetch_options?.cors,
+              priority:fetch_options?.priority,
+              redirect:fetch_options?.redirect,
+              referrer:fetch_options?.referrer,
+              referrerPolicy:fetch_options?.referrerPolicy,
+              signal:fetch_options?.signal,
+              window:fetch_options?.window
+          }) : await fetch(action,{method,body,
+            headers:request_headers as Record<string,string>, 
+            cache:fetch_options?.cache,
+              credentials:fetch_options?.credentials,
+              integrity:fetch_options?.integrity,
+              keepalive:fetch_options?.keepalive,
+              mode:fetch_options?.cors,
+              priority:fetch_options?.priority,
+              redirect:fetch_options?.redirect,
+              referrer:fetch_options?.referrer,
+              referrerPolicy:fetch_options?.referrerPolicy,
+              signal:fetch_options?.signal,
+              window:fetch_options?.window
+          });
         const sent_response = response.clone();
         const {status,statusText,ok} = response.clone();
         if(!ok){

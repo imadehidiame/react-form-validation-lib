@@ -341,6 +341,8 @@ export function FormTest({loaderData}:LoadedData) {
                     notify={(error)=>{
                         alert(error);
                     }}
+                    fetch_options={{credentials:'include'}}
+                    request_headers={{'X-CSRF-TOKEN':'csrf_request_token_header'}}
                     validationMode="onChange"
                     set_form_elements={set_form_data}
                     class_names="space-y-1 p-0 flex flex-wrap gap-4 items-center mb-12"
@@ -394,6 +396,8 @@ export function FormTest({loaderData}:LoadedData) {
 | `action`                            | `string`                                                        | ✅        | —          | API endpoint to submit the form data.                 |
 | `method`                            | `'POST' \| 'PATCH'`                                             | ✅        | —          | HTTP method for submission.                           |
 | `is_json`                           | `boolean`                                                       | ❌        | `false`    | Whether to send data as JSON or `FormData`.           |
+| `fetch_options`                     | `Partial<Record<string,any>>`                                   | ❌        | -          | Valid record of fetch request options e.g credentials, cors,etc.           |
+| `request_headers`                   | `<Record<string,string>`                                        | ❌        | -          | Request headers to send alongside the request           |
 | `is_clear_form`                     | `boolean`                                                       | ❌        | `false`    | Whether to reset form after successful submission.    |
 | `notify`                            | `(error: string) => void`                                       | ❌        | —          | Called on validation or submission errors.            |
 | `pre_submit_action`                 | `(values) => values \| Promise<values>`                         | ❌        | —          | Function to modify form values before submission.     |

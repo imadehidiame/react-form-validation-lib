@@ -25,6 +25,7 @@ description?:string;
 description_class_names?:string;
 error_field_class_names?:string;
 disabled?: boolean;
+show_password_icon?:boolean;
 field_class_names?: string;
 label_class_names?: string;
 label?: string;
@@ -64,7 +65,7 @@ method:'POST'|'PATCH';
 is_json?:true;
 is_clear_form?:boolean;
 notify?: (error: string) => void;
-pre_submit_action?: (values: z.infer<z.ZodObject<T>>) => Promise<z.infer<z.ZodObject<T>>> | z.infer<z.ZodObject<T>>;
+pre_submit_action?: (values: z.infer<z.ZodObject<T>>) => Promise<z.infer<z.ZodObject<T>>|any> | z.infer<z.ZodObject<T>|any>;
 load_animation?: () => void;
 hide_animation?: () => void;
 after_submit_action?: (message: string | any, data: any) => void;
@@ -75,6 +76,21 @@ validation_mode?:'onChange'|'onBlur'|'onTouched'|'onSubmit'|'all';
 form_components: FormElement<T>[];
 set_form_elements ?: React.Dispatch<React.SetStateAction<T[]>>;
 on_change?: (name: keyof T | string, value: any) => void;
+fetch_options?:Partial<{
+  cache?:'default'|'force-cache'|'no-cache'|'no-store'|'only-if-cached'|'reload'
+  credentials?:'include'|'omit'|'same-origin',
+  integrity?:string,
+  keepalive?:boolean,
+  cors?:'cors'|'navigate'|'no-cors'|'same-origin',
+  priority?:'auto'|'high'|'low',
+  redirect?:'error'|'follow'|'manual',
+  referrer?:string,
+  referrerPolicy?:'no-referrer'|'no-referrer-when-downgrade'|'origin'|'origin-when-cross-origin'
+  |'same-origin'|'strict-origin'|'strict-origin-when-cross-origin'|'unsafe-url',
+  signal?:AbortSignal|null,
+  window?:null
+}>;
+request_headers?:Record<string,string>;
 }
 
 export const FormWrapper = forwardRef<HTMLFormElement, CustomFormProps<any>>(
@@ -99,6 +115,8 @@ export const FormWrapper = forwardRef<HTMLFormElement, CustomFormProps<any>>(
     validation_mode='onBlur',
     class_names,
     children,
+    fetch_options,
+    request_headers,
     ...formProps
   },
   ref
@@ -228,7 +246,8 @@ export const FormWrapper = forwardRef<HTMLFormElement, CustomFormProps<any>>(
       }
     }
     try {
-      const {status,is_error,data} = await fetch_request<FormActionData>(method,action,submit_data,is_json);
+      const {status,is_error,data} = await fetch_request<FormActionData>(method,action,submit_data
+        ,is_json,undefined,undefined,fetch_options,request_headers);
       setNavigation?.('idle');
       if(is_error){
         if(status === 500){
@@ -272,14 +291,14 @@ export const FormWrapper = forwardRef<HTMLFormElement, CustomFormProps<any>>(
                   const form_values = form.getValues();
                   Object.keys(form_values).forEach((key) => {
                   if (errors[key] && validate_values.includes(key)) {
-                    form.setError(key as keyof typeof form_values, { message: typeof errors[key] === 'string' ? errors[key] : errors[key][0] });
+                    form.setError(key as any, { message: typeof errors[key] === 'string' ? errors[key] : errors[key][0] });
                   }
                 });
                 }else{
                   const form_values = form.getValues();
                   Object.keys(form_values).forEach((key) => {
                   if (errors[key]) {
-                    form.setError(key as keyof typeof form_values, { message: typeof errors[key] === 'string' ? errors[key] : errors[key][0] });
+                    form.setError(key as any, { message: typeof errors[key] === 'string' ? errors[key] : errors[key][0] });
                   }
                 });
                 }
@@ -329,7 +348,7 @@ export const FormWrapper = forwardRef<HTMLFormElement, CustomFormProps<any>>(
         onSubmit={form.handleSubmit(handleFormSubmission)}
         className={class_names}
       >
-        {form_components.map(({ id, name, placeholder, type, label, class_names, size_limit, file_count, extensions, selects, checks, component, field_class_names, label_class_names, flag, disabled,insertion,description,description_class_names,error_field_class_names }) => {
+        {form_components.map(({ id, name, placeholder, type, label, class_names, size_limit, file_count, extensions, selects, checks, component, field_class_names, label_class_names, flag, disabled,insertion,show_password_icon,description,description_class_names,error_field_class_names }) => {
           let ret_value;
           if (type === 'text' || type === 'password')
             ret_value = (
@@ -348,6 +367,7 @@ export const FormWrapper = forwardRef<HTMLFormElement, CustomFormProps<any>>(
                 name={name as Path<z.infer<typeof schema>>}
                 input_type={type}
                 is_password={type === 'password'}
+                show_password_icon={show_password_icon}
                 placeholder={placeholder}
                 id={id ? id : name as string}
                 on_change={(value) => {
@@ -558,6 +578,10 @@ export class GenerateFormdata<T extends FieldValues> {
   set_type(type:FormType){
     this.options.type = type;
     return this; 
+  }
+  set_show_password_icon(show:boolean){
+    this.options.show_password_icon = show;
+    return this;
   }
   set_checks(checks:{name:string,value:string}[]){
     this.options.checks = checks;

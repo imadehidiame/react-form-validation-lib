@@ -37,9 +37,10 @@ interface FormFieldComponentProps<T extends FieldValues> {
 interface InputFieldProps<T extends FieldValues> extends FormFieldComponentProps<T> {
   is_password?:boolean;
   input_type?:string;
+  show_password_icon?:boolean;
 } 
 
-export const FormFieldComponent = <T extends FieldValues>({ form, name, placeholder, label, description, class_names,field_class_names, input_type = "text", label_class_names,icon,id,disabled,on_change,set_form_state,is_password,description_class_names,error_field_class_names }: InputFieldProps<T>) => {
+export const FormFieldComponent = <T extends FieldValues>({ form, name, placeholder, label, description, class_names,field_class_names, input_type = "text", label_class_names,icon,id,disabled,on_change,set_form_state,is_password,description_class_names,error_field_class_names,show_password_icon }: InputFieldProps<T>) => {
   const [inputt_type,set_input_type] = useState(input_type);
   return (
     <FormFieldContext.Provider value={{name}}>
@@ -50,8 +51,7 @@ export const FormFieldComponent = <T extends FieldValues>({ form, name, placehol
           return (
           <FormItem className={cn(class_names)}>
             {label && <FormLabel className={label_class_names}>{label}</FormLabel>}
-            <div className="relative">
-              
+            <div className="relative flex items-center">
               <Input placeholder={placeholder} {...field} id={id} className={cn(field_class_names)} disabled={disabled} type={inputt_type} value={field.value ? field.value : ''} onBlur={(ev)=>{
                 field.onChange(ev);
                 on_change?.(ev.target.value);
@@ -60,7 +60,7 @@ export const FormFieldComponent = <T extends FieldValues>({ form, name, placehol
               }} />
               
               {
-                is_password ?
+                is_password && show_password_icon ?
                 <button
                 type="button"
                 className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-50 hover:text-amber-300 cursor-pointer focus:outline-none"
