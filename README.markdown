@@ -37,6 +37,11 @@ npm install @imadehidiame/react-form-validation
 
 
 🚀 Quick Start
+```css
+\* import the @imadehidiame/react-form-validation/dist/styles.css  file in your entry CSS file*\
+@import '@imadehidiame/react-form-validation/dist/styles.css';
+```
+
 ```tsx
 'use client';
 import { Loader2 } from "lucide-react";
@@ -107,7 +112,7 @@ export function FormTest({loaderData}:LoadedData) {
 
     const [form_data, set_form_data] = loader ? useState<FormElement<any>[]>([
 
-        (new GenerateFormdata).set_class_names('w-full').set_description('Your password').set_field_class_names('bg-gray-700 border-gray-600 text-white focus-visible:ring-amber-300 mt-2.5').set_label('Password').set_label_class_names('mb-4 text-amber-300').set_name('password').set_placeholder('Enter your assword').set_type('password').set_validation(password).set_value(loader.password).build(),
+        (new GenerateFormdata).set_class_names('w-full').set_description('Your password').set_field_class_names('bg-gray-700 border-gray-600 text-white focus-visible:ring-amber-300 mt-2.5').set_label('Password').set_label_class_names('mb-4 text-amber-300').set_name('password').set_placeholder('Enter your assword').set_type('password').set_show_password_icon(true).set_validation(password).set_value(loader.password).build(),
         
         (new GenerateFormdata).set_class_names('w-full').set_description('Deposit Amount').set_field_class_names('bg-gray-700 border-gray-600 text-white focus-visible:ring-amber-300 mt-2.5').set_label('Depost ($)').set_label_class_names('mb-4 text-amber-300').set_name('amount').set_placeholder('Deposit amount').set_type('float').set_validation(amount).set_value(loader.amount).build(),
 
@@ -192,7 +197,7 @@ export function FormTest({loaderData}:LoadedData) {
             }
         ]).set_disabled(is_submitting).set_field_class_names('flex flex-row items-start space-x-4 space-y-0 mt-2 flex-wrap').set_id('family').set_label('Family Members').set_label_class_names('mb-4 text-amber-300').set_name('family').set_type('checkbox').set_validation(family).set_value(loader.family).build()
     ])  : useState<FormElement<any>[]>([
-        (new GenerateFormdata).set_class_names('w-full').set_description('Your password').set_field_class_names('bg-gray-700 border-gray-600 text-white focus-visible:ring-amber-300 mt-2.5').set_label('Password').set_label_class_names('mb-4 text-amber-300').set_name('password').set_placeholder('Enter your assword').set_type('password').set_validation(password).set_value('').build(),
+        (new GenerateFormdata).set_class_names('w-full').set_description('Your password').set_field_class_names('bg-gray-700 border-gray-600 text-white focus-visible:ring-amber-300 mt-2.5').set_label('Password').set_label_class_names('mb-4 text-amber-300').set_name('password').set_placeholder('Enter your assword').set_type('password').set_show_password_icon(true).set_validation(password).set_value('').build(),
         
         (new GenerateFormdata).set_class_names('w-full').set_description('Deposit Amount').set_field_class_names('bg-gray-700 border-gray-600 text-white focus-visible:ring-amber-300 mt-2.5').set_label('Depost ($)').set_label_class_names('mb-4 text-amber-300').set_name('amount').set_placeholder('Deposit amount').set_type('float').set_validation(amount).set_value('').build(),
 
@@ -433,6 +438,7 @@ set_form_state?:React.Dispatch<React.SetStateAction<T>>;
 id?: string;
 validation?: z.ZodType;
 placeholder?: string;
+show_password_icon?:boolean;
 size_limit?: number;
 file_count?: number;
 extensions?:string[];

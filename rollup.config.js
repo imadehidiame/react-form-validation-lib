@@ -1,20 +1,20 @@
+// rollup.config.js
 import resolve from '@rollup/plugin-node-resolve';
 import commonjs from '@rollup/plugin-commonjs';
 import typescript from '@rollup/plugin-typescript';
 import { terser } from 'rollup-plugin-terser';
 import postcss from 'rollup-plugin-postcss';
-import tailwindcss from '@tailwindcss/postcss';
 import babel from '@rollup/plugin-babel';
 
 const ignoreUseClient = () => ({
-    name: 'ignore-use-client',
-    transform(code) {
-      if (code.startsWith("'use client'") || code.startsWith('"use client"')) {
-        return { code: code.replace(/['"]use client['"];\n?/, ''), map: null };
-      }
-      return null;
-    },
-  });
+  name: 'ignore-use-client',
+  transform(code) {
+    if (code.startsWith("'use client'") || code.startsWith('"use client"')) {
+      return { code: code.replace(/['"]use client['"];\n?/, ''), map: null };
+    }
+    return null;
+  },
+});
 
 export default {
   input: 'src/index.ts',
@@ -42,14 +42,15 @@ export default {
       exclude: 'node_modules/**',
     }),
     postcss({
-     config: {
-       path: './postcss.config.js',
+      config: {
+        path: './postcss.config.js',
       },
-      plugins: [tailwindcss({ config: './tailwind.config.js' })],
+      source: 'src/styles.css',
       extract: 'styles.css',
       minimize: true,
-      sourceMap:true,
-      include: ['src/**/*.css'],
+      sourceMap: true,
+      // Ensure PostCSS processes CSS even if not imported
+      autoModules: false,
     }),
     terser(),
   ],

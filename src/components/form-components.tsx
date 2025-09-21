@@ -51,8 +51,8 @@ export const FormFieldComponent = <T extends FieldValues>({ form, name, placehol
           return (
           <FormItem className={cn(class_names)}>
             {label && <FormLabel className={label_class_names}>{label}</FormLabel>}
-            <div className="relative flex items-center">
-              <Input placeholder={placeholder} {...field} id={id} className={cn(field_class_names)} disabled={disabled} type={inputt_type} value={field.value ? field.value : ''} onBlur={(ev)=>{
+            <div className="relative">
+              <Input placeholder={placeholder} {...field} id={id} className={cn(field_class_names,is_password && show_password_icon ? 'pr-10':'' )} disabled={disabled} type={inputt_type} value={field.value ? field.value : ''} onBlur={(ev)=>{
                 field.onChange(ev);
                 on_change?.(ev.target.value);
                 set_form_state?.(prev=>prev.map(e=>e.name && e.name === name ? {...e,value:ev.target.value}:e));
@@ -63,7 +63,8 @@ export const FormFieldComponent = <T extends FieldValues>({ form, name, placehol
                 is_password && show_password_icon ?
                 <button
                 type="button"
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-50 hover:text-amber-300 cursor-pointer focus:outline-none"
+                className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                //className="absolute right-2 top-1/2 transform -translate-y-1/2 text-gray-50 hover:text-amber-300 cursor-pointer focus:outline-none"
                 onClick={()=>set_input_type(prev=>prev=='password'?'text':'password')}
               >
                 { inputt_type === 'text' ? <EyeOff className="h-5 w-5" /> : <Eye className="h-5 w-5" />}
