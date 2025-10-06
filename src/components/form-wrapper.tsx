@@ -278,7 +278,7 @@ export const FormWrapper = forwardRef<HTMLFormElement, CustomFormProps<any>>(
         }else{
           let dataa = data as FormActionData;
           const { errors, error, data:served_data, message } = dataa;  
-          if(errors === undefined && error === undefined && served_data === undefined && message === undefined ){
+          if(data === undefined && errors === undefined && error === undefined &&  message === undefined ){
             throw {message:'An invalid response was sent from the server',invalid:true};
           }else{
 
